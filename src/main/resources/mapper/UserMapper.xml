@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.lmk.dao.UserDao">
+
+    <sql id="baseSql">
+        id id,
+        name name,
+        password password,
+        age age,
+        sex sex,
+        create_time createTime
+    </sql>
+    <select id="selectAll" parameterType="com.lmk.qo.UserQo" resultType="User">
+        select
+        <include refid="baseSql"></include>
+        from user
+        where 1=1
+        <if test="name!=null and name!=''">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="sex!='-1' and sex!=null and sex!=''">
+            and sex=#{sex}
+        </if>
+        limit #{index},#{pageSize}
+    </select>
+
+    <select id="selectNameAndPassword" resultType="User">
+        select * from user where name=#{name} and password=#{password}
+    </select>
+
+    <select id="getCount" resultType="int">
+        select count(*) from user
+        where 1=1
+        <if test="name!=null and name!=''">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="sex!='-1' and sex!=null and sex!=''">
+            and sex=#{sex}
+        </if>
+    </select>
+
+    <!--//删除-->
+    <delete id="delete" parameterType="Integer">
+        delete from user where id=#{id}
+    </delete>
+
+    <insert id="add" parameterType="User">
+        insert into user(name,password,age,sex,create_time) values (#{name},#{password},#{age},#{sex},#{createTime})
+    </insert>
+
+    <!--//修改-->
+    <select id="toUpdate" resultType="User">
+        select * from user where id=#{id}
+    </select>
+
+    <!--//修改-->
+    <update id="update">
+        update user set name=#{name},age=#{age},sex=#{sex},create_time=#{createTime} where id=#{id}
+    </update>
+</mapper>
